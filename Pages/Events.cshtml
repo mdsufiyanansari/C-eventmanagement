@@ -1,4 +1,5 @@
 @page
+@model EventsModel
 
 <!-- Events Page -->
 <div class="events-container">
@@ -73,6 +74,28 @@
     </div>
 </div>
 
+<style>
+.event-list-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background: white;
+    height: 100%;
+}
+
+.event-list-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.event-list-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+</style>
+
 <script>
 const sampleEvents = [
     {
@@ -83,8 +106,9 @@ const sampleEvents = [
         time: '18:00',
         location: 'Central Park, NYC',
         price: 85,
+        capacity: 500,
+        availableSeats: 450,
         rating: 4.8,
-        image: 'https://images.unsplash.com/photo-1519671482677-504be0271101?w=500&h=300&fit=crop',
         description: 'Join us for an amazing night of live music with top artists and performers.'
     },
     {
@@ -95,8 +119,9 @@ const sampleEvents = [
         time: '17:00',
         location: 'Grand Hotel Ballroom',
         price: 150,
+        capacity: 300,
+        availableSeats: 250,
         rating: 4.9,
-        image: 'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&h=300&fit=crop',
         description: 'Celebrate love with an elegant wedding ceremony and reception.'
     },
     {
@@ -107,8 +132,9 @@ const sampleEvents = [
         time: '09:00',
         location: 'San Francisco Convention Center',
         price: 250,
+        capacity: 1000,
+        availableSeats: 800,
         rating: 4.7,
-        image: 'https://images.unsplash.com/photo-1467226623193-6a0c5aa65fb3?w=500&h=300&fit=crop',
         description: 'Meet industry leaders and discover the latest technology innovations.'
     },
     {
@@ -119,8 +145,9 @@ const sampleEvents = [
         time: '19:00',
         location: 'Entertainment Club',
         price: 45,
+        capacity: 200,
+        availableSeats: 180,
         rating: 4.5,
-        image: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=500&h=300&fit=crop',
         description: 'A fun-filled birthday celebration with music, games, and more.'
     },
     {
@@ -131,8 +158,9 @@ const sampleEvents = [
         time: '20:00',
         location: 'Luxury Hotel Downtown',
         price: 200,
+        capacity: 300,
+        availableSeats: 200,
         rating: 4.8,
-        image: 'https://images.unsplash.com/photo-1514604185662-d67eec7e80ec?w=500&h=300&fit=crop',
         description: 'An elegant evening supporting a great cause. Join us for dinner and live music.'
     },
     {
@@ -143,8 +171,9 @@ const sampleEvents = [
         time: '17:00',
         location: 'Modern Art Gallery',
         price: 35,
+        capacity: 150,
+        availableSeats: 120,
         rating: 4.6,
-        image: 'https://images.unsplash.com/photo-1469924935469-70657ce66540?w=500&h=300&fit=crop',
         description: 'Explore contemporary art from talented artists around the world.'
     },
     {
@@ -155,8 +184,9 @@ const sampleEvents = [
         time: '21:00',
         location: 'Blue Moon Jazz Club',
         price: 65,
+        capacity: 100,
+        availableSeats: 75,
         rating: 4.9,
-        image: 'https://images.unsplash.com/photo-1511671782486-a01980e01a18?w=500&h=300&fit=crop',
         description: 'Experience smooth jazz performances in an intimate setting.'
     },
     {
@@ -167,8 +197,9 @@ const sampleEvents = [
         time: '22:00',
         location: 'Night Club Elite',
         price: 55,
+        capacity: 250,
+        availableSeats: 150,
         rating: 4.7,
-        image: 'https://images.unsplash.com/photo-1540575467063-178f50002cbc?w=500&h=300&fit=crop',
         description: 'Dance the night away with DJ performances and premium bar service.'
     }
 ];
@@ -182,15 +213,20 @@ function displayEvents(events) {
         return;
     }
 
-    events.forEach((event, index) => {
+    events.forEach(event => {
         const eventCard = document.createElement('div');
         eventCard.className = 'col-md-6 col-lg-4';
         eventCard.innerHTML = `
             <div class="event-list-card">
-                <div class="event-list-image" style="background: url('${event.image}') center/cover;"></div>
-                <div class="event-list-content">
+                <div class="event-list-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white;">
+                    <div class="text-center">
+                        <i class="fas fa-calendar-alt" style="font-size: 2rem;"></i>
+                        <p class="mt-2">${event.category}</p>
+                    </div>
+                </div>
+                <div class="p-3">
                     <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="fw-bold mb-0">${event.title}</h6>
+                        <h6 class="fw-bold mb-0" title="${event.title}">${event.title}</h6>
                         <span class="badge bg-primary">${event.category}</span>
                     </div>
                     <p class="text-muted small mb-2">
@@ -199,18 +235,16 @@ function displayEvents(events) {
                     </p>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="text-primary fw-bold">$${event.price}</span>
-                        <div class="rating">
-                            <i class="fas fa-star text-warning"></i>
-                            <span class="ms-1">${event.rating}</span>
-                        </div>
+                        <span class="badge bg-info">${event.availableSeats}/${event.capacity} seats</span>
                     </div>
                     <div class="d-flex gap-2">
                         <button class="btn btn-outline-primary btn-sm w-100" onclick="viewEventDetails(${event.id})">
                             <i class="fas fa-info-circle"></i> Details
                         </button>
-                        <button class="btn btn-primary btn-sm w-100" onclick="bookEvent(${event.id})">
-                            <i class="fas fa-ticket"></i> Book
-                        </button>
+                        ${event.availableSeats > 0 
+                            ? `<button class="btn btn-primary btn-sm w-100" onclick="bookEvent(${event.id})"><i class="fas fa-ticket"></i> Book</button>`
+                            : `<button class="btn btn-danger btn-sm w-100" disabled><i class="fas fa-ban"></i> Full</button>`
+                        }
                     </div>
                 </div>
             </div>
@@ -247,19 +281,15 @@ function viewEventDetails(eventId) {
     if (event) {
         document.getElementById('modalEventTitle').textContent = event.title;
         document.getElementById('eventModalContent').innerHTML = `
-            <div class="row">
-                <div class="col-md-6">
-                    <img src="${event.image}" class="img-fluid rounded" style="height: 300px; object-fit: cover;">
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Category:</strong> ${event.category}</p>
-                    <p><strong>Date:</strong> ${new Date(event.date).toLocaleDateString()}</p>
-                    <p><strong>Time:</strong> ${event.time}</p>
-                    <p><strong>Location:</strong> ${event.location}</p>
-                    <p><strong>Price:</strong> $${event.price}</p>
-                    <p><strong>Rating:</strong> <i class="fas fa-star text-warning"></i> ${event.rating}</p>
-                    <p><strong>Description:</strong> ${event.description}</p>
-                </div>
+            <div>
+                <p><strong>Category:</strong> ${event.category}</p>
+                <p><strong>Date:</strong> ${new Date(event.date).toLocaleDateString()}</p>
+                <p><strong>Time:</strong> ${event.time}</p>
+                <p><strong>Location:</strong> ${event.location}</p>
+                <p><strong>Price:</strong> $${event.price}</p>
+                <p><strong>Available Seats:</strong> ${event.availableSeats}/${event.capacity}</p>
+                <p><strong>Rating:</strong> <i class="fas fa-star text-warning"></i> ${event.rating}</p>
+                <p><strong>Description:</strong> ${event.description}</p>
             </div>
         `;
         const modal = new bootstrap.Modal(document.getElementById('eventModal'));
@@ -268,20 +298,7 @@ function viewEventDetails(eventId) {
 }
 
 function bookEvent(eventId) {
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-    if (!user) {
-        showToast('Please login to book events');
-        window.location.href = '/Login';
-        return;
-    }
-    
     window.location.href = `/Booking?eventId=${eventId}`;
-}
-
-function filterCategory(category) {
-    document.getElementById('categoryFilter').value = category;
-    filterEvents();
-    document.querySelector('main').scrollIntoView({ behavior: 'smooth' });
 }
 
 // Initialize on load

@@ -96,3 +96,10 @@ C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManag
 C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\obj\Debug\net10.0\compressed\3rxc5cpbo9-{0}-sb680lnc17-sb680lnc17.gz
 C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\obj\Debug\net10.0\compressed\isb1p91u7t-{0}-6ipb7pqc12-6ipb7pqc12.gz
 C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\obj\Debug\net10.0\compressed\bh9a18sbnq-{0}-2hdgpd96it-2hdgpd96it.gz
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\obj\Debug\net10.0\EventManagement.sourcelink.json
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\bin\Debug\net10.0\out\web.config
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\bin\Debug\net10.0\out\appsettings.Development.json
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\bin\Debug\net10.0\out\appsettings.json
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\bin\Debug\net10.0\out\EventManagement.deps.json
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\bin\Debug\net10.0\out\EventManagement.runtimeconfig.json
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\bin\Debug\net10.0\out\EventManagement.staticwebassets.endpoints.json

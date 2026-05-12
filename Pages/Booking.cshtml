@@ -1,7 +1,17 @@
 @page
+@model BookingModel
 
 <!-- Booking Page -->
 <div class="booking-container">
+    <!-- Success Message -->
+    <div id="successAlert" class="alert alert-success alert-dismissible fade show" role="alert" style="margin: 20px; display: none;">
+        <h4 class="alert-heading"><i class="fas fa-check-circle"></i> Booking Created Successfully!</h4>
+        <p id="successMessage"></p>
+        <hr>
+        <p class="mb-0">Your booking has been saved. You can track your booking status <a href="/BookingStatus">here</a>.</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
     <!-- Page Header -->
     <section class="page-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 0;">
         <div class="container" data-aos="fade-up">
@@ -16,7 +26,7 @@
             <div class="row">
                 <!-- Form -->
                 <div class="col-lg-8" data-aos="fade-up">
-                    <form onsubmit="submitBooking(event)" class="booking-form">
+                    <div class="booking-form">
                         <!-- Personal Information -->
                         <div class="form-section mb-5">
                             <h4 class="fw-bold mb-4">
@@ -50,8 +60,8 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Event Type</label>
-                                    <select class="form-select form-select-lg" required>
-                                        <option selected>Select event type</option>
+                                    <select name="eventType" class="form-select form-select-lg" required onchange="updateEventType()">
+                                        <option value="">Select event type</option>
                                         <option value="Wedding">Wedding</option>
                                         <option value="Birthday">Birthday</option>
                                         <option value="Corporate">Corporate</option>
@@ -61,15 +71,15 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Event Date</label>
-                                    <input type="date" class="form-control form-control-lg" required>
+                                    <input type="date" name="eventDate" class="form-control form-control-lg" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Guest Count</label>
-                                    <input type="number" class="form-control form-control-lg" placeholder="Number of guests" min="1" required>
+                                    <input type="number" name="guestCount" class="form-control form-control-lg" placeholder="Number of guests" min="1" required onchange="calculateTotal()">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Location/Venue</label>
-                                    <input type="text" class="form-control form-control-lg" placeholder="Where is your event?" required>
+                                    <input type="text" name="venue" class="form-control form-control-lg" placeholder="Where is your event?" required>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +90,7 @@
                                 <span class="badge bg-primary me-2">3</span>Special Requests
                             </h4>
                             <label class="form-label fw-bold">Any special requirements?</label>
-                            <textarea class="form-control" rows="4" placeholder="Tell us about special requests, decorations, catering preferences, etc."></textarea>
+                            <textarea name="specialRequests" class="form-control" rows="4" placeholder="Tell us about special requests, decorations, catering preferences, etc."></textarea>
                         </div>
 
                         <!-- Payment Method -->
@@ -90,53 +100,35 @@
                             </h4>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <div class="payment-option" onclick="selectPayment('card')">
-                                        <input type="radio" name="payment" id="paymentCard" value="card" required>
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment" id="paymentCard" value="Credit Card" required>
                                         <label for="paymentCard" class="w-100">
                                             <i class="fas fa-credit-card"></i> Credit/Debit Card
                                         </label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="payment-option" onclick="selectPayment('wallet')">
-                                        <input type="radio" name="payment" id="paymentWallet" value="wallet">
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment" id="paymentWallet" value="Digital Wallet">
                                         <label for="paymentWallet" class="w-100">
                                             <i class="fas fa-wallet"></i> Digital Wallet
                                         </label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="payment-option" onclick="selectPayment('bank')">
-                                        <input type="radio" name="payment" id="paymentBank" value="bank">
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment" id="paymentBank" value="Bank Transfer">
                                         <label for="paymentBank" class="w-100">
                                             <i class="fas fa-university"></i> Bank Transfer
                                         </label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="payment-option" onclick="selectPayment('installment')">
-                                        <input type="radio" name="payment" id="paymentInstallment" value="installment">
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment" id="paymentInstallment" value="Installment">
                                         <label for="paymentInstallment" class="w-100">
                                             <i class="fas fa-percentage"></i> Installment
                                         </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card Details (shown when card is selected) -->
-                            <div id="cardDetails" style="display: none; margin-top: 20px;">
-                                <div class="row g-3">
-                                    <div class="col-12">
-                                        <label class="form-label fw-bold">Card Number</label>
-                                        <input type="text" class="form-control form-control-lg" placeholder="1234 5678 9012 3456">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-bold">Expiry Date</label>
-                                        <input type="text" class="form-control form-control-lg" placeholder="MM/YY">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-bold">CVV</label>
-                                        <input type="text" class="form-control form-control-lg" placeholder="123">
                                     </div>
                                 </div>
                             </div>
@@ -152,10 +144,10 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">
+                        <button type="button" class="btn btn-primary btn-lg w-100 fw-bold" onclick="submitBooking(event)">
                             <i class="fas fa-check me-2"></i>Complete Booking
                         </button>
-                    </form>
+                    </div>
                 </div>
 
                 <!-- Booking Summary -->
@@ -166,55 +158,41 @@
                         <div class="summary-item">
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Event Type</span>
-                                <span class="fw-bold">Wedding</span>
+                                <span class="fw-bold" id="summaryEventType">-</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Date</span>
-                                <span class="fw-bold">June 20, 2026</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-3">
                                 <span>Guests</span>
-                                <span class="fw-bold">150</span>
+                                <span class="fw-bold" id="summaryGuests">0</span>
                             </div>
                         </div>
 
-                        <hr>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
 
                         <div class="summary-prices">
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Base Price</span>
-                                <span>$500</span>
+                                <span>Per Guest Price</span>
+                                <span>$50</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Service Fee</span>
-                                <span>$30</span>
+                                <span>Service Fee (5%)</span>
+                                <span id="serviceFee">$0</span>
                             </div>
-                            <div class="d-flex justify-content-between mb-2">
+                            <div class="d-flex justify-content-between mb-3">
                                 <span>Platform Fee</span>
                                 <span>$10</span>
                             </div>
-                            <div class="d-flex justify-content-between text-success mb-3">
-                                <span>Discount</span>
-                                <span>-$20</span>
-                            </div>
                         </div>
 
-                        <hr>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
 
-                        <div class="d-flex justify-content-between fw-bold fs-5">
-                            <span>Total</span>
-                            <span class="text-primary">$520</span>
+                        <div class="d-flex justify-content-between fw-bold" style="font-size: 18px;">
+                            <span>Total Amount</span>
+                            <span id="totalAmount">$0</span>
                         </div>
 
-                        <div class="alert alert-info mt-3 small">
-                            <i class="fas fa-info-circle me-2"></i>
-                            A confirmation email will be sent to your email address upon successful booking.
-                        </div>
-
-                        <div class="alert alert-warning small">
-                            <i class="fas fa-shield-alt me-2"></i>
-                            Your booking is protected by our guarantee policy.
-                        </div>
+                        <p class="text-white-50 mt-3 mb-0" style="font-size: 12px;">
+                            <i class="fas fa-info-circle"></i> You can check your booking status <a href="/BookingStatus" style="color: white; text-decoration: underline;">here</a>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -222,79 +200,123 @@
     </section>
 </div>
 
+<style>
+.booking-summary-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.payment-option {
+    border: 2px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.payment-option:hover {
+    border-color: #667eea;
+    background-color: #f8f9ff;
+}
+
+.payment-option input[type="radio"]:checked + label {
+    color: #667eea;
+    font-weight: bold;
+}
+
+.payment-option label {
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-section {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.summary-item {
+    padding: 0;
+}
+</style>
+
 <script>
-function selectPayment(method) {
-    const cardDetails = document.getElementById('cardDetails');
-    if (method === 'card') {
-        cardDetails.style.display = 'block';
-    } else {
-        cardDetails.style.display = 'none';
-    }
+function updateEventType() {
+    const eventType = document.querySelector('select[name="eventType"]').value;
+    document.getElementById('summaryEventType').textContent = eventType || '-';
+    calculateTotal();
+}
+
+function calculateTotal() {
+    const guestCount = parseInt(document.querySelector('input[name="guestCount"]').value) || 0;
+    const pricePerGuest = 50;
+    const subtotal = guestCount * pricePerGuest;
+    const serviceFee = Math.round(subtotal * 0.05);
+    const platformFee = 10;
+    const total = subtotal + serviceFee + platformFee;
+
+    document.getElementById('summaryGuests').textContent = guestCount;
+    document.getElementById('serviceFee').textContent = '$' + serviceFee;
+    document.getElementById('totalAmount').textContent = '$' + total;
+}
+
+function getEventIdFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return parseInt(params.get('eventId')) || null;
 }
 
 function submitBooking(event) {
     event.preventDefault();
 
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-    if (!user) {
-        showToast('Please login first');
-        window.location.href = '/Login';
+    const name = document.querySelector('input[name="name"]').value;
+    const email = document.querySelector('input[name="email"]').value;
+    const payment = document.querySelector('input[name="payment"]:checked');
+    
+    if (!name || !email || !payment) {
+        alert('Please fill in all required fields');
         return;
     }
 
-    // Get form data
-    const formData = new FormData(event.target);
-    
-    // Create booking object
-    const booking = {
-        id: Date.now().toString(),
-        eventType: formData.get('event-type') || 'Wedding',
-        date: formData.get('event-date') || new Date().toISOString().split('T')[0],
-        location: formData.get('location') || 'To be determined',
-        guests: formData.get('guests') || '0',
-        bookingDate: new Date().toLocaleDateString(),
-        status: 'Confirmed'
+    const formData = {
+        id: Date.now(),
+        eventId: getEventIdFromURL() || 1,
+        name: name,
+        email: email,
+        phone: document.querySelector('input[name="phone"]').value,
+        dob: document.querySelector('input[name="dob"]').value,
+        eventType: document.querySelector('select[name="eventType"]').value,
+        guestCount: parseInt(document.querySelector('input[name="guestCount"]').value),
+        venue: document.querySelector('input[name="venue"]').value,
+        specialRequests: document.querySelector('textarea[name="specialRequests"]').value,
+        paymentMethod: payment.value,
+        totalAmount: document.getElementById('totalAmount').textContent.replace('$', ''),
+        status: 'Confirmed',
+        bookedAt: new Date().toISOString()
     };
 
-    // Get existing bookings
-    let userBookings = JSON.parse(localStorage.getItem('userBookings')) || [];
-    
-    // Add new booking
-    userBookings.push(booking);
-    
-    // Save to localStorage
-    localStorage.setItem('userBookings', JSON.stringify(userBookings));
+    let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+    bookings.push(formData);
+    localStorage.setItem('bookings', JSON.stringify(bookings));
 
-    // Show success modal
-    showBookingSuccess();
-}
+    document.getElementById('successMessage').textContent = `Your booking has been confirmed! Booking ID: ${formData.id}. Total Amount: $${formData.totalAmount}`;
+    document.getElementById('successAlert').style.display = 'block';
+    document.querySelector('.booking-form').reset();
+    calculateTotal();
 
-function showBookingSuccess() {
-    const modal = document.createElement('div');
-    modal.innerHTML = `
-        <div class="modal fade" id="successModal" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body text-center py-5">
-                        <div style="font-size: 4rem; color: #28a745; margin-bottom: 20px;">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <h4 class="fw-bold mb-3">Booking Confirmed!</h4>
-                        <p class="text-muted mb-4">Your event booking has been confirmed successfully. You will receive a confirmation email shortly.</p>
-                        <a href="/Dashboard" class="btn btn-primary btn-lg w-100">
-                            <i class="fas fa-arrow-right me-2"></i>Go to Dashboard
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-    successModal.show();
+    window.scrollTo(0, 0);
 
     setTimeout(() => {
-        window.location.href = '/Dashboard';
-    }, 2000);
+        window.location.href = '/BookingStatus?email=' + encodeURIComponent(formData.email);
+    }, 3000);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    calculateTotal();
+});
 </script>

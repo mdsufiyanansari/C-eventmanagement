@@ -1,0 +1,183 @@
+@page
+@model BookingStatusModel
+
+<!-- Booking Status Page -->
+<div class="booking-status-container">
+    <!-- Page Header -->
+    <section class="page-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 0;">
+        <div class="container" data-aos="fade-up">
+            <h1 class="display-4 fw-bold">My Bookings</h1>
+            <p class="lead">Track your event bookings and payments</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-5">
+        <div class="container">
+            <!-- Search for Bookings -->
+            <div class="mb-5">
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <input type="email" class="form-control form-control-lg" placeholder="Enter your email to view bookings" id="searchEmail">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary btn-lg w-100" onclick="searchBookings()">Search Bookings</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookings List -->
+            <div id="bookingsList"></div>
+        </div>
+    </section>
+</div>
+
+<style>
+.booking-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 5px solid #667eea;
+}
+
+.booking-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge {
+    font-size: 14px;
+    padding: 8px 12px;
+}
+</style>
+
+<script>
+function searchBookings() {
+    const email = document.getElementById('searchEmail').value;
+    if (!email) {
+        alert('Please enter your email');
+        return;
+    }
+    loadBookings(email);
+}
+
+function loadBookings(email) {
+    const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+    const userBookings = bookings.filter(b => b.email.toLowerCase() === email.toLowerCase());
+
+    const container = document.getElementById('bookingsList');
+    container.innerHTML = '';
+
+    if (userBookings.length === 0) {
+        container.innerHTML = `
+            <div class="alert alert-info" role="alert">
+                <i class="fas fa-info-circle"></i> No bookings found for this email.
+            </div>
+        `;
+        return;
+    }
+
+    const bookingsHTML = userBookings.map(booking => `
+        <div class="booking-card mb-4 p-4">
+            <div class="row">
+                <div class="col-md-8">
+                    <h5 class="fw-bold mb-2">
+                        ${booking.eventType}
+                        <span class="badge bg-info ms-2">${booking.eventType}</span>
+                    </h5>
+                    <p class="mb-2">
+                        <strong>Booking Date:</strong> ${new Date(booking.bookedAt).toLocaleDateString()} ${new Date(booking.bookedAt).toLocaleTimeString()}
+                    </p>
+                    <p class="mb-2">
+                        <strong>Event Date:</strong> ${booking.eventDate}
+                    </p>
+                    <p class="mb-2">
+                        <strong>Guest Count:</strong> ${booking.guestCount}
+                    </p>
+                    <p class="mb-2">
+                        <strong>Venue:</strong> ${booking.venue}
+                    </p>
+                    <p class="mb-2">
+                        <strong>Total Amount:</strong> $${booking.totalAmount}
+                    </p>
+                    <p class="mb-2">
+                        <strong>Payment Method:</strong> ${booking.paymentMethod}
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="mb-3">
+                        ${getStatusBadge(booking.status)}
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary mb-2 w-100" onclick="viewDetails(${booking.id})">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                    ${booking.status !== 'Cancelled' ? `
+                        <button class="btn btn-sm btn-outline-danger w-100" onclick="cancelBooking(${booking.id}, '${booking.email}')">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    container.innerHTML = `<div class="bookings-list">${bookingsHTML}</div>`;
+}
+
+function getStatusBadge(status) {
+    const statusConfig = {
+        'Confirmed': { color: 'success', icon: 'fa-check-circle', text: 'Confirmed' },
+        'Pending': { color: 'warning', icon: 'fa-hourglass-half', text: 'Pending' },
+        'Completed': { color: 'info', icon: 'fa-flag-checkered', text: 'Completed' },
+        'Cancelled': { color: 'danger', icon: 'fa-times-circle', text: 'Cancelled' }
+    };
+    
+    const config = statusConfig[status] || statusConfig['Pending'];
+    return `<span class="badge bg-${config.color} status-badge"><i class="fas ${config.icon}"></i> ${config.text}</span>`;
+}
+
+function cancelBooking(bookingId, email) {
+    if (!confirm('Are you sure you want to cancel this booking?')) return;
+
+    const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+    const bookingIndex = bookings.findIndex(b => b.id === bookingId);
+
+    if (bookingIndex !== -1) {
+        bookings[bookingIndex].status = 'Cancelled';
+        localStorage.setItem('bookings', JSON.stringify(bookings));
+        loadBookings(email);
+        alert('Booking cancelled successfully');
+    }
+}
+
+function viewDetails(bookingId) {
+    const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+    const booking = bookings.find(b => b.id === bookingId);
+
+    if (booking) {
+        alert(`Booking Details:
+        
+Name: ${booking.name}
+Email: ${booking.email}
+Phone: ${booking.phone}
+Event Type: ${booking.eventType}
+Event Date: ${booking.eventDate}
+Guests: ${booking.guestCount}
+Venue: ${booking.venue}
+Special Requests: ${booking.specialRequests || 'None'}
+Total: $${booking.totalAmount}
+Status: ${booking.status}
+Booked on: ${new Date(booking.bookedAt).toLocaleString()}`);
+    }
+}
+
+// Load bookings on page load if email is in query params
+document.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get('email');
+    if (email) {
+        document.getElementById('searchEmail').value = email;
+        loadBookings(email);
+    }
+});
+</script>
