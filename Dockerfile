@@ -1,15 +1,15 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
-WORKDIR /app
+WORKDIR /src
 
-COPY . ./
+COPY . .
 
-RUN dotnet publish -c Release -o out
+RUN dotnet publish "EventManagement.csproj" -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview
 WORKDIR /app
 
-COPY --from=build /app/out .
+COPY --from=build /app/publish .
 
 EXPOSE 10000
 
-ENTRYPOINT ["dotnet", " EventManagement.dll"]
+ENTRYPOINT ["dotnet", "EventManagement.dll"]
