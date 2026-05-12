@@ -1,0 +1,7 @@
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\out\EventManagement.exe
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\out\appsettings.Development.json
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\out\appsettings.json
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\out\EventManagement.dll
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\out\EventManagement.deps.json
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\out\EventManagement.runtimeconfig.json
+C:\Users\itsme\OneDrive\Desktop\sem5th_projects\eventmanagementdotnet\EventManagement\out\EventManagement.pdb
