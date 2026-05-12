@@ -12,4 +12,4 @@ COPY --from=build /app/out .
 
 EXPOSE 10000
 
-ENTRYPOINT ["dotnet", "PhotoAlbumApp.dll"]
+ENTRYPOINT ["dotnet", "EventApp.dll"]
