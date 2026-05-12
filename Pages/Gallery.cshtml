@@ -1,0 +1,161 @@
+@page
+
+<!-- Gallery Page -->
+<div class="gallery-container">
+    <!-- Page Header -->
+    <section class="page-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 0;">
+        <div class="container" data-aos="fade-up">
+            <h1 class="display-4 fw-bold">Event Gallery</h1>
+            <p class="lead">Browse beautiful moments from our events</p>
+        </div>
+    </section>
+
+    <!-- Gallery Filters -->
+    <section class="py-5 bg-light">
+        <div class="container text-center" data-aos="fade-up">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-primary" onclick="filterGallery('all')">All Events</button>
+                <button type="button" class="btn btn-outline-primary" onclick="filterGallery('Wedding')">Weddings</button>
+                <button type="button" class="btn btn-outline-primary" onclick="filterGallery('Concert')">Concerts</button>
+                <button type="button" class="btn btn-outline-primary" onclick="filterGallery('Corporate')">Corporate</button>
+                <button type="button" class="btn btn-outline-primary" onclick="filterGallery('Party')">Parties</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Masonry Gallery -->
+    <section class="py-5">
+        <div class="container">
+            <div class="gallery-masonry" id="galleryGrid">
+                <!-- Gallery items will be loaded here -->
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Lightbox Modal -->
+<div class="modal fade" id="lightboxModal" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body d-flex align-items-center justify-content-center">
+                <img id="lightboxImage" src="" alt="Gallery Image" style="max-height: 90vh; max-width: 100%; object-fit: contain;">
+            </div>
+            <div class="modal-footer border-0">
+                <p class="text-white mb-0" id="lightboxCaption"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const galleryImages = [
+    {
+        src: 'https://images.unsplash.com/photo-1519671482677-504be0271101?w=400&h=400&fit=crop',
+        category: 'Concert',
+        title: 'Music Festival Performance'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=400&h=400&fit=crop',
+        category: 'Wedding',
+        title: 'Elegant Wedding Reception'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1467226623193-6a0c5aa65fb3?w=400&h=400&fit=crop',
+        category: 'Corporate',
+        title: 'Tech Conference Hall'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1514604185662-d67eec7e80ec?w=400&h=400&fit=crop',
+        category: 'Party',
+        title: 'Grand Gala Night'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1469924935469-70657ce66540?w=400&h=400&fit=crop',
+        category: 'Corporate',
+        title: 'Business Networking Event'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=400&fit=crop',
+        category: 'Concert',
+        title: 'Live Jazz Performance'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=400&fit=crop',
+        category: 'Wedding',
+        title: 'Wedding Celebration'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1540575467063-178f50002cbc?w=400&h=400&fit=crop',
+        category: 'Party',
+        title: 'Dance Floor Action'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop',
+        category: 'Concert',
+        title: 'Crowd at Concert'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1511671782486-a01980e01a18?w=400&h=400&fit=crop',
+        category: 'Wedding',
+        title: 'Romantic Moment'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1501701686981-fa550b63e964?w=400&h=400&fit=crop',
+        category: 'Corporate',
+        title: 'Board Meeting'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=400&fit=crop',
+        category: 'Party',
+        title: 'Party Decorations'
+    }
+];
+
+function displayGallery(images) {
+    const grid = document.getElementById('galleryGrid');
+    grid.innerHTML = '';
+
+    images.forEach((img, index) => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.innerHTML = `
+            <div class="gallery-image-wrapper">
+                <img src="${img.src}" alt="${img.title}" class="gallery-image" onclick="openLightbox('${img.src}', '${img.title}')">
+                <div class="gallery-overlay">
+                    <div class="gallery-info">
+                        <h6 class="fw-bold">${img.title}</h6>
+                        <p class="text-white small mb-0">${img.category}</p>
+                        <button class="btn btn-sm btn-light mt-2" onclick="openLightbox('${img.src}', '${img.title}')">
+                            <i class="fas fa-search-plus"></i> View
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        grid.appendChild(item);
+    });
+}
+
+function filterGallery(category) {
+    let filtered = galleryImages;
+    if (category !== 'all') {
+        filtered = galleryImages.filter(img => img.category === category);
+    }
+    displayGallery(filtered);
+}
+
+function openLightbox(src, caption) {
+    document.getElementById('lightboxImage').src = src;
+    document.getElementById('lightboxCaption').textContent = caption;
+    const modal = new bootstrap.Modal(document.getElementById('lightboxModal'));
+    modal.show();
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', function() {
+    displayGallery(galleryImages);
+});
+</script>

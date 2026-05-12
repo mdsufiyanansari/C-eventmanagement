@@ -1,0 +1,291 @@
+@page
+
+<!-- Events Page -->
+<div class="events-container">
+    <!-- Page Header -->
+    <section class="page-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 0;">
+        <div class="container" data-aos="fade-up">
+            <h1 class="display-4 fw-bold">All Events</h1>
+            <p class="lead">Discover and book amazing events near you</p>
+        </div>
+    </section>
+
+    <!-- Filters and Search -->
+    <section class="py-4 bg-light">
+        <div class="container">
+            <div class="row g-3" data-aos="fade-up">
+                <!-- Search Bar -->
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search events..." onkeyup="filterEvents()">
+                    </div>
+                </div>
+
+                <!-- Category Filter -->
+                <div class="col-md-3">
+                    <select class="form-select" id="categoryFilter" onchange="filterEvents()">
+                        <option value="">All Categories</option>
+                        <option value="Wedding">Wedding</option>
+                        <option value="Birthday">Birthday</option>
+                        <option value="Corporate">Corporate</option>
+                        <option value="Concert">Concert</option>
+                        <option value="Party">Party</option>
+                    </select>
+                </div>
+
+                <!-- Price Filter -->
+                <div class="col-md-3">
+                    <select class="form-select" id="priceFilter" onchange="filterEvents()">
+                        <option value="">All Prices</option>
+                        <option value="0-50">Under $50</option>
+                        <option value="50-100">$50 - $100</option>
+                        <option value="100-200">$100 - $200</option>
+                        <option value="200+">$200+</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Grid -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4" id="eventsGrid" data-aos="fade-up">
+                <!-- Events will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Event Details Modal -->
+<div class="modal fade" id="eventModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEventTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="eventModalContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const sampleEvents = [
+    {
+        id: 1,
+        title: 'Summer Music Festival',
+        category: 'Concert',
+        date: '2026-06-15',
+        time: '18:00',
+        location: 'Central Park, NYC',
+        price: 85,
+        rating: 4.8,
+        image: 'https://images.unsplash.com/photo-1519671482677-504be0271101?w=500&h=300&fit=crop',
+        description: 'Join us for an amazing night of live music with top artists and performers.'
+    },
+    {
+        id: 2,
+        title: 'Wedding Ceremony & Reception',
+        category: 'Wedding',
+        date: '2026-06-20',
+        time: '17:00',
+        location: 'Grand Hotel Ballroom',
+        price: 150,
+        rating: 4.9,
+        image: 'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&h=300&fit=crop',
+        description: 'Celebrate love with an elegant wedding ceremony and reception.'
+    },
+    {
+        id: 3,
+        title: 'Tech Conference 2026',
+        category: 'Corporate',
+        date: '2026-07-20',
+        time: '09:00',
+        location: 'San Francisco Convention Center',
+        price: 250,
+        rating: 4.7,
+        image: 'https://images.unsplash.com/photo-1467226623193-6a0c5aa65fb3?w=500&h=300&fit=crop',
+        description: 'Meet industry leaders and discover the latest technology innovations.'
+    },
+    {
+        id: 4,
+        title: 'Birthday Bash 2026',
+        category: 'Birthday',
+        date: '2026-07-10',
+        time: '19:00',
+        location: 'Entertainment Club',
+        price: 45,
+        rating: 4.5,
+        image: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=500&h=300&fit=crop',
+        description: 'A fun-filled birthday celebration with music, games, and more.'
+    },
+    {
+        id: 5,
+        title: 'Charity Gala Night',
+        category: 'Party',
+        date: '2026-08-05',
+        time: '20:00',
+        location: 'Luxury Hotel Downtown',
+        price: 200,
+        rating: 4.8,
+        image: 'https://images.unsplash.com/photo-1514604185662-d67eec7e80ec?w=500&h=300&fit=crop',
+        description: 'An elegant evening supporting a great cause. Join us for dinner and live music.'
+    },
+    {
+        id: 6,
+        title: 'Art Exhibition Opening',
+        category: 'Corporate',
+        date: '2026-08-15',
+        time: '17:00',
+        location: 'Modern Art Gallery',
+        price: 35,
+        rating: 4.6,
+        image: 'https://images.unsplash.com/photo-1469924935469-70657ce66540?w=500&h=300&fit=crop',
+        description: 'Explore contemporary art from talented artists around the world.'
+    },
+    {
+        id: 7,
+        title: 'Jazz Lounge Night',
+        category: 'Concert',
+        date: '2026-09-01',
+        time: '21:00',
+        location: 'Blue Moon Jazz Club',
+        price: 65,
+        rating: 4.9,
+        image: 'https://images.unsplash.com/photo-1511671782486-a01980e01a18?w=500&h=300&fit=crop',
+        description: 'Experience smooth jazz performances in an intimate setting.'
+    },
+    {
+        id: 8,
+        title: 'Annual Party Extravaganza',
+        category: 'Party',
+        date: '2026-09-10',
+        time: '22:00',
+        location: 'Night Club Elite',
+        price: 55,
+        rating: 4.7,
+        image: 'https://images.unsplash.com/photo-1540575467063-178f50002cbc?w=500&h=300&fit=crop',
+        description: 'Dance the night away with DJ performances and premium bar service.'
+    }
+];
+
+function displayEvents(events) {
+    const grid = document.getElementById('eventsGrid');
+    grid.innerHTML = '';
+
+    if (events.length === 0) {
+        grid.innerHTML = '<div class="col-12 text-center py-5"><i class="fas fa-search" style="font-size: 3rem; color: #ddd;"></i><p class="text-muted mt-3">No events found</p></div>';
+        return;
+    }
+
+    events.forEach((event, index) => {
+        const eventCard = document.createElement('div');
+        eventCard.className = 'col-md-6 col-lg-4';
+        eventCard.innerHTML = `
+            <div class="event-list-card">
+                <div class="event-list-image" style="background: url('${event.image}') center/cover;"></div>
+                <div class="event-list-content">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="fw-bold mb-0">${event.title}</h6>
+                        <span class="badge bg-primary">${event.category}</span>
+                    </div>
+                    <p class="text-muted small mb-2">
+                        <i class="fas fa-calendar"></i> ${new Date(event.date).toLocaleDateString()}<br>
+                        <i class="fas fa-map-pin"></i> ${event.location}
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-primary fw-bold">$${event.price}</span>
+                        <div class="rating">
+                            <i class="fas fa-star text-warning"></i>
+                            <span class="ms-1">${event.rating}</span>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="viewEventDetails(${event.id})">
+                            <i class="fas fa-info-circle"></i> Details
+                        </button>
+                        <button class="btn btn-primary btn-sm w-100" onclick="bookEvent(${event.id})">
+                            <i class="fas fa-ticket"></i> Book
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        grid.appendChild(eventCard);
+    });
+}
+
+function filterEvents() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const category = document.getElementById('categoryFilter').value;
+    const priceRange = document.getElementById('priceFilter').value;
+
+    let filtered = sampleEvents.filter(event => {
+        const matchesSearch = event.title.toLowerCase().includes(search) || event.location.toLowerCase().includes(search);
+        const matchesCategory = !category || event.category === category;
+        
+        let matchesPrice = true;
+        if (priceRange) {
+            if (priceRange === '0-50') matchesPrice = event.price <= 50;
+            else if (priceRange === '50-100') matchesPrice = event.price >= 50 && event.price <= 100;
+            else if (priceRange === '100-200') matchesPrice = event.price >= 100 && event.price <= 200;
+            else if (priceRange === '200+') matchesPrice = event.price >= 200;
+        }
+
+        return matchesSearch && matchesCategory && matchesPrice;
+    });
+
+    displayEvents(filtered);
+}
+
+function viewEventDetails(eventId) {
+    const event = sampleEvents.find(e => e.id === eventId);
+    if (event) {
+        document.getElementById('modalEventTitle').textContent = event.title;
+        document.getElementById('eventModalContent').innerHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="${event.image}" class="img-fluid rounded" style="height: 300px; object-fit: cover;">
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Category:</strong> ${event.category}</p>
+                    <p><strong>Date:</strong> ${new Date(event.date).toLocaleDateString()}</p>
+                    <p><strong>Time:</strong> ${event.time}</p>
+                    <p><strong>Location:</strong> ${event.location}</p>
+                    <p><strong>Price:</strong> $${event.price}</p>
+                    <p><strong>Rating:</strong> <i class="fas fa-star text-warning"></i> ${event.rating}</p>
+                    <p><strong>Description:</strong> ${event.description}</p>
+                </div>
+            </div>
+        `;
+        const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+        modal.show();
+    }
+}
+
+function bookEvent(eventId) {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user) {
+        showToast('Please login to book events');
+        window.location.href = '/Login';
+        return;
+    }
+    
+    window.location.href = `/Booking?eventId=${eventId}`;
+}
+
+function filterCategory(category) {
+    document.getElementById('categoryFilter').value = category;
+    filterEvents();
+    document.querySelector('main').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', function() {
+    displayEvents(sampleEvents);
+});
+</script>

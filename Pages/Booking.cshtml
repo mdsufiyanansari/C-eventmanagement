@@ -1,0 +1,300 @@
+@page
+
+<!-- Booking Page -->
+<div class="booking-container">
+    <!-- Page Header -->
+    <section class="page-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 0;">
+        <div class="container" data-aos="fade-up">
+            <h1 class="display-4 fw-bold">Book Your Event</h1>
+            <p class="lead">Complete your event booking in simple steps</p>
+        </div>
+    </section>
+
+    <!-- Booking Form -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Form -->
+                <div class="col-lg-8" data-aos="fade-up">
+                    <form onsubmit="submitBooking(event)" class="booking-form">
+                        <!-- Personal Information -->
+                        <div class="form-section mb-5">
+                            <h4 class="fw-bold mb-4">
+                                <span class="badge bg-primary me-2">1</span>Your Information
+                            </h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Full Name</label>
+                                    <input type="text" name="name" class="form-control form-control-lg" placeholder="John Doe" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Email</label>
+                                    <input type="email" name="email" class="form-control form-control-lg" placeholder="your@email.com" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Phone</label>
+                                    <input type="tel" name="phone" class="form-control form-control-lg" placeholder="+1 (555) 000-0000" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Date of Birth</label>
+                                    <input type="date" name="dob" class="form-control form-control-lg" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Event Details -->
+                        <div class="form-section mb-5">
+                            <h4 class="fw-bold mb-4">
+                                <span class="badge bg-primary me-2">2</span>Event Details
+                            </h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Event Type</label>
+                                    <select class="form-select form-select-lg" required>
+                                        <option selected>Select event type</option>
+                                        <option value="Wedding">Wedding</option>
+                                        <option value="Birthday">Birthday</option>
+                                        <option value="Corporate">Corporate</option>
+                                        <option value="Concert">Concert</option>
+                                        <option value="Party">Party</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Event Date</label>
+                                    <input type="date" class="form-control form-control-lg" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Guest Count</label>
+                                    <input type="number" class="form-control form-control-lg" placeholder="Number of guests" min="1" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Location/Venue</label>
+                                    <input type="text" class="form-control form-control-lg" placeholder="Where is your event?" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Special Requests -->
+                        <div class="form-section mb-5">
+                            <h4 class="fw-bold mb-4">
+                                <span class="badge bg-primary me-2">3</span>Special Requests
+                            </h4>
+                            <label class="form-label fw-bold">Any special requirements?</label>
+                            <textarea class="form-control" rows="4" placeholder="Tell us about special requests, decorations, catering preferences, etc."></textarea>
+                        </div>
+
+                        <!-- Payment Method -->
+                        <div class="form-section mb-5">
+                            <h4 class="fw-bold mb-4">
+                                <span class="badge bg-primary me-2">4</span>Payment Method
+                            </h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="payment-option" onclick="selectPayment('card')">
+                                        <input type="radio" name="payment" id="paymentCard" value="card" required>
+                                        <label for="paymentCard" class="w-100">
+                                            <i class="fas fa-credit-card"></i> Credit/Debit Card
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="payment-option" onclick="selectPayment('wallet')">
+                                        <input type="radio" name="payment" id="paymentWallet" value="wallet">
+                                        <label for="paymentWallet" class="w-100">
+                                            <i class="fas fa-wallet"></i> Digital Wallet
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="payment-option" onclick="selectPayment('bank')">
+                                        <input type="radio" name="payment" id="paymentBank" value="bank">
+                                        <label for="paymentBank" class="w-100">
+                                            <i class="fas fa-university"></i> Bank Transfer
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="payment-option" onclick="selectPayment('installment')">
+                                        <input type="radio" name="payment" id="paymentInstallment" value="installment">
+                                        <label for="paymentInstallment" class="w-100">
+                                            <i class="fas fa-percentage"></i> Installment
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Details (shown when card is selected) -->
+                            <div id="cardDetails" style="display: none; margin-top: 20px;">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold">Card Number</label>
+                                        <input type="text" class="form-control form-control-lg" placeholder="1234 5678 9012 3456">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Expiry Date</label>
+                                        <input type="text" class="form-control form-control-lg" placeholder="MM/YY">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">CVV</label>
+                                        <input type="text" class="form-control form-control-lg" placeholder="123">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms -->
+                        <div class="form-section mb-5">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                                <label class="form-check-label" for="termsCheck">
+                                    I agree to the <a href="#" class="text-decoration-none">Terms & Conditions</a> and <a href="#" class="text-decoration-none">Cancellation Policy</a>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">
+                            <i class="fas fa-check me-2"></i>Complete Booking
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Booking Summary -->
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="booking-summary-card sticky-top" style="top: 100px;">
+                        <h5 class="fw-bold mb-4">Booking Summary</h5>
+
+                        <div class="summary-item">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Event Type</span>
+                                <span class="fw-bold">Wedding</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Date</span>
+                                <span class="fw-bold">June 20, 2026</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span>Guests</span>
+                                <span class="fw-bold">150</span>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="summary-prices">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Base Price</span>
+                                <span>$500</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Service Fee</span>
+                                <span>$30</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Platform Fee</span>
+                                <span>$10</span>
+                            </div>
+                            <div class="d-flex justify-content-between text-success mb-3">
+                                <span>Discount</span>
+                                <span>-$20</span>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between fw-bold fs-5">
+                            <span>Total</span>
+                            <span class="text-primary">$520</span>
+                        </div>
+
+                        <div class="alert alert-info mt-3 small">
+                            <i class="fas fa-info-circle me-2"></i>
+                            A confirmation email will be sent to your email address upon successful booking.
+                        </div>
+
+                        <div class="alert alert-warning small">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            Your booking is protected by our guarantee policy.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+function selectPayment(method) {
+    const cardDetails = document.getElementById('cardDetails');
+    if (method === 'card') {
+        cardDetails.style.display = 'block';
+    } else {
+        cardDetails.style.display = 'none';
+    }
+}
+
+function submitBooking(event) {
+    event.preventDefault();
+
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user) {
+        showToast('Please login first');
+        window.location.href = '/Login';
+        return;
+    }
+
+    // Get form data
+    const formData = new FormData(event.target);
+    
+    // Create booking object
+    const booking = {
+        id: Date.now().toString(),
+        eventType: formData.get('event-type') || 'Wedding',
+        date: formData.get('event-date') || new Date().toISOString().split('T')[0],
+        location: formData.get('location') || 'To be determined',
+        guests: formData.get('guests') || '0',
+        bookingDate: new Date().toLocaleDateString(),
+        status: 'Confirmed'
+    };
+
+    // Get existing bookings
+    let userBookings = JSON.parse(localStorage.getItem('userBookings')) || [];
+    
+    // Add new booking
+    userBookings.push(booking);
+    
+    // Save to localStorage
+    localStorage.setItem('userBookings', JSON.stringify(userBookings));
+
+    // Show success modal
+    showBookingSuccess();
+}
+
+function showBookingSuccess() {
+    const modal = document.createElement('div');
+    modal.innerHTML = `
+        <div class="modal fade" id="successModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center py-5">
+                        <div style="font-size: 4rem; color: #28a745; margin-bottom: 20px;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Booking Confirmed!</h4>
+                        <p class="text-muted mb-4">Your event booking has been confirmed successfully. You will receive a confirmation email shortly.</p>
+                        <a href="/Dashboard" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-arrow-right me-2"></i>Go to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+    successModal.show();
+
+    setTimeout(() => {
+        window.location.href = '/Dashboard';
+    }, 2000);
+}
+</script>

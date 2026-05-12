@@ -1,0 +1,449 @@
+﻿@page
+
+<!-- Hero Section -->
+<section class="hero-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; color: white; position: relative; overflow: hidden;">
+    <!-- Animated Background -->
+    <div class="hero-bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="container text-center hero-content" data-aos="fade-up">
+        <h1 class="hero-title display-3 fw-bold mb-4">Plan Your Perfect Event</h1>
+        <p class="hero-subtitle lead fs-5 mb-4">From intimate gatherings to grand celebrations, we make every moment unforgettable</p>
+        <div class="hero-buttons">
+            <a href="/Events" class="btn btn-light btn-lg me-3 fw-bold">
+                <i class="fas fa-calendar-days me-2"></i>Explore Events
+            </a>
+            <button class="btn btn-outline-light btn-lg fw-bold" data-bs-toggle="modal" data-bs-target="#bookingModal">
+                <i class="fas fa-star me-2"></i>Plan Event
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Event Categories Section -->
+<section class="py-5 categories-section">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-down">
+            <h2 class="section-title fw-bold">Event Categories</h2>
+            <p class="section-subtitle text-muted">Choose the perfect event type for your celebration</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Wedding -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="category-card" onclick="filterCategory('Wedding')">
+                    <div class="category-icon">
+                        <i class="fas fa-ring"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3">Weddings</h5>
+                    <p class="text-muted small">Celebrate your special day with elegance and charm</p>
+                    <div class="category-badge">250+ Events</div>
+                </div>
+            </div>
+
+            <!-- Birthday -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="category-card" onclick="filterCategory('Birthday')">
+                    <div class="category-icon">
+                        <i class="fas fa-cake-candles"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3">Birthdays</h5>
+                    <p class="text-muted small">Make memories with friends and family members</p>
+                    <div class="category-badge">180+ Events</div>
+                </div>
+            </div>
+
+            <!-- Corporate -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="category-card" onclick="filterCategory('Corporate')">
+                    <div class="category-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3">Corporate</h5>
+                    <p class="text-muted small">Professional events for your business needs</p>
+                    <div class="category-badge">320+ Events</div>
+                </div>
+            </div>
+
+            <!-- Concert -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="category-card" onclick="filterCategory('Concert')">
+                    <div class="category-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3">Concerts</h5>
+                    <p class="text-muted small">Live music and entertainment experiences</p>
+                    <div class="category-badge">150+ Events</div>
+                </div>
+            </div>
+
+            <!-- Party -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="500">
+                <div class="category-card" onclick="filterCategory('Party')">
+                    <div class="category-icon">
+                        <i class="fas fa-champagne-glasses"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3">Parties</h5>
+                    <p class="text-muted small">Fun-filled celebrations with great vibes</p>
+                    <div class="category-badge">290+ Events</div>
+                </div>
+            </div>
+
+            <!-- Other -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="600">
+                <div class="category-card" onclick="filterCategory('Other')">
+                    <div class="category-icon">
+                        <i class="fas fa-sparkles"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3">Special Events</h5>
+                    <p class="text-muted small">Unique and memorable occasions</p>
+                    <div class="category-badge">420+ Events</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Events Slider -->
+<section class="py-5 featured-section bg-light">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-down">
+            <h2 class="section-title fw-bold">Featured Events</h2>
+            <p class="section-subtitle text-muted">Discover our hottest upcoming events</p>
+        </div>
+
+        <div class="swiper featuredSwiper" data-aos="fade-up">
+            <div class="swiper-wrapper">
+                <!-- Event 1 -->
+                <div class="swiper-slide">
+                    <div class="featured-card">
+                        <div class="featured-image" style="background: url('https://images.unsplash.com/photo-1519671482677-504be0271101?w=500&h=300&fit=crop') center/cover;"></div>
+                        <div class="featured-content">
+                            <h5 class="fw-bold">Summer Music Festival</h5>
+                            <p class="text-muted small mb-2"><i class="fas fa-calendar me-2"></i>June 15, 2026</p>
+                            <p class="text-muted small mb-3"><i class="fas fa-map-pin me-2"></i>Central Park, NYC</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">$45 - $95</span>
+                                <div class="rating">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <span class="ms-1">4.8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 2 -->
+                <div class="swiper-slide">
+                    <div class="featured-card">
+                        <div class="featured-image" style="background: url('https://images.unsplash.com/photo-1467226623193-6a0c5aa65fb3?w=500&h=300&fit=crop') center/cover;"></div>
+                        <div class="featured-content">
+                            <h5 class="fw-bold">Tech Conference 2026</h5>
+                            <p class="text-muted small mb-2"><i class="fas fa-calendar me-2"></i>July 20, 2026</p>
+                            <p class="text-muted small mb-3"><i class="fas fa-map-pin me-2"></i>San Francisco, CA</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-success">$99 - $299</span>
+                                <div class="rating">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <span class="ms-1">4.9</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 3 -->
+                <div class="swiper-slide">
+                    <div class="featured-card">
+                        <div class="featured-image" style="background: url('https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&h=300&fit=crop') center/cover;"></div>
+                        <div class="featured-content">
+                            <h5 class="fw-bold">Grand Wedding Expo</h5>
+                            <p class="text-muted small mb-2"><i class="fas fa-calendar me-2"></i>August 5, 2026</p>
+                            <p class="text-muted small mb-3"><i class="fas fa-map-pin me-2"></i>Las Vegas, NV</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-danger">$25 - $75</span>
+                                <div class="rating">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <span class="ms-1">4.7</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Upcoming Events -->
+<section class="py-5 upcoming-section">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-down">
+            <h2 class="section-title fw-bold">Upcoming Events</h2>
+            <p class="section-subtitle text-muted">Don't miss these amazing upcoming events</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="event-card">
+                    <div class="event-image" style="background: url('https://images.unsplash.com/photo-1514604185662-d67eec7e80ec?w=400&h=250&fit=crop') center/cover;"></div>
+                    <div class="event-details">
+                        <h6 class="fw-bold mb-2">Annual Gala Night</h6>
+                        <p class="text-muted small mb-2"><i class="fas fa-calendar me-2"></i>June 10, 2026</p>
+                        <p class="text-muted small mb-2"><i class="fas fa-map-pin me-2"></i>Grand Hotel</p>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-primary fw-bold">$50</span>
+                            <a href="/Events" class="text-decoration-none">View Details →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="event-card">
+                    <div class="event-image" style="background: url('https://images.unsplash.com/photo-1469924935469-70657ce66540?w=400&h=250&fit=crop') center/cover;"></div>
+                    <div class="event-details">
+                        <h6 class="fw-bold mb-2">Product Launch Event</h6>
+                        <p class="text-muted small mb-2"><i class="fas fa-calendar me-2"></i>June 25, 2026</p>
+                        <p class="text-muted small mb-2"><i class="fas fa-map-pin me-2"></i>Innovation Hub</p>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-primary fw-bold">Free</span>
+                            <a href="/Events" class="text-decoration-none">View Details →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="event-card">
+                    <div class="event-image" style="background: url('https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=250&fit=crop') center/cover;"></div>
+                    <div class="event-details">
+                        <h6 class="fw-bold mb-2">Jazz Night Experience</h6>
+                        <p class="text-muted small mb-2"><i class="fas fa-calendar me-2"></i>July 2, 2026</p>
+                        <p class="text-muted small mb-2"><i class="fas fa-map-pin me-2"></i>Blue Moon Club</p>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-primary fw-bold">$65</span>
+                            <a href="/Events" class="text-decoration-none">View Details →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="/Events" class="btn btn-primary btn-lg">View All Events</a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 testimonials-section bg-light">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-down">
+            <h2 class="section-title fw-bold">What Our Customers Say</h2>
+            <p class="section-subtitle text-muted">Real experiences from real event organizers</p>
+        </div>
+
+        <div class="swiper testimonialsSwiper" data-aos="fade-up">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="stars mb-3">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <p class="mb-4">"EventPro made organizing my daughter's birthday party incredibly easy. The platform is intuitive and their support team was fantastic!"</p>
+                        <div class="d-flex align-items-center">
+                            <div class="testimonial-avatar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                            <div class="ms-3">
+                                <h6 class="fw-bold mb-0">Sarah Johnson</h6>
+                                <small class="text-muted">Event Organizer</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="stars mb-3">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <p class="mb-4">"We managed our corporate conference using EventPro. The features are comprehensive and the analytics dashboard is excellent for tracking attendance."</p>
+                        <div class="d-flex align-items-center">
+                            <div class="testimonial-avatar" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                            <div class="ms-3">
+                                <h6 class="fw-bold mb-0">Mark Chen</h6>
+                                <small class="text-muted">Corporate Manager</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="stars mb-3">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <p class="mb-4">"My wedding was a dream come true thanks to EventPro's beautiful design and easy-to-use features. Highly recommended!"</p>
+                        <div class="d-flex align-items-center">
+                            <div class="testimonial-avatar" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+                            <div class="ms-3">
+                                <h6 class="fw-bold mb-0">Emily Williams</h6>
+                                <small class="text-muted">Bride</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5 faq-section">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-down">
+            <h2 class="section-title fw-bold">Frequently Asked Questions</h2>
+            <p class="section-subtitle text-muted">Find answers to common questions</p>
+        </div>
+
+        <div class="accordion" id="faqAccordion" data-aos="fade-up">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                        How do I book an event?
+                    </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Simply browse our events, select the one you like, and click "Book Now". Fill in your details, choose your seats, and complete the booking process.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                        Can I cancel my booking?
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Yes, you can cancel your booking up to 48 hours before the event for a full refund.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                        What payment methods do you accept?
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        We accept all major credit cards, digital wallets, and bank transfers. Your payment is secured with SSL encryption.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                        How do I organize my own event?
+                    </button>
+                </h2>
+                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Click on "Plan Event" or visit our dashboard. Our event creation wizard will guide you through the process step by step.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                        Is there customer support available?
+                    </button>
+                </h2>
+                <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Yes! Our support team is available 24/7 via chat, email, and phone. Visit our Contact page to reach us.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-5 newsletter-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <div class="container text-center" data-aos="fade-up">
+        <h2 class="fw-bold mb-3">Stay Updated</h2>
+        <p class="lead mb-4">Subscribe to our newsletter for exclusive deals and event updates</p>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form class="input-group input-group-lg" onsubmit="handleNewsletterSubscribe(event)">
+                    <input type="email" class="form-control" placeholder="Enter your email" required>
+                    <button class="btn btn-light fw-bold" type="submit">Subscribe</button>
+                </form>
+                <small class="text-light mt-2">We respect your privacy. Unsubscribe at any time.</small>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Booking Modal -->
+<div class="modal fade" id="bookingModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Plan Your Event</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="handleQuickBooking(event)">
+                    <div class="mb-3">
+                        <label class="form-label">Event Type</label>
+                        <select class="form-select" required>
+                            <option selected>Select event type</option>
+                            <option value="Wedding">Wedding</option>
+                            <option value="Birthday">Birthday</option>
+                            <option value="Corporate">Corporate</option>
+                            <option value="Concert">Concert</option>
+                            <option value="Party">Party</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Preferred Date</label>
+                        <input type="date" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-control" placeholder="City or venue" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Guest Count</label>
+                        <input type="number" class="form-control" placeholder="Number of guests" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Get Started</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
