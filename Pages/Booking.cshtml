@@ -26,7 +26,7 @@
             <div class="row">
                 <!-- Form -->
                 <div class="col-lg-8" data-aos="fade-up">
-                    <div class="booking-form">
+                    <form class="booking-form" id="bookingForm" onsubmit="submitBooking(event)">
                         <!-- Personal Information -->
                         <div class="form-section mb-5">
                             <h4 class="fw-bold mb-4">
@@ -144,10 +144,10 @@
                             </div>
                         </div>
 
-                        <button type="button" class="btn btn-primary btn-lg w-100 fw-bold" onclick="submitBooking(event)">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">
                             <i class="fas fa-check me-2"></i>Complete Booking
                         </button>
-                    </div>
+                    </form>
                 </div>
 
                 <!-- Booking Summary -->
@@ -247,76 +247,25 @@
 </style>
 
 <script>
-function updateEventType() {
-    const eventType = document.querySelector('select[name="eventType"]').value;
-    document.getElementById('summaryEventType').textContent = eventType || '-';
-    calculateTotal();
-}
-
-function calculateTotal() {
-    const guestCount = parseInt(document.querySelector('input[name="guestCount"]').value) || 0;
-    const pricePerGuest = 50;
-    const subtotal = guestCount * pricePerGuest;
-    const serviceFee = Math.round(subtotal * 0.05);
-    const platformFee = 10;
-    const total = subtotal + serviceFee + platformFee;
-
-    document.getElementById('summaryGuests').textContent = guestCount;
-    document.getElementById('serviceFee').textContent = '$' + serviceFee;
-    document.getElementById('totalAmount').textContent = '$' + total;
-}
-
-function getEventIdFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    return parseInt(params.get('eventId')) || null;
-}
-
-function submitBooking(event) {
-    event.preventDefault();
-
-    const name = document.querySelector('input[name="name"]').value;
-    const email = document.querySelector('input[name="email"]').value;
-    const payment = document.querySelector('input[name="payment"]:checked');
-    
-    if (!name || !email || !payment) {
-        alert('Please fill in all required fields');
+// Initialize booking page on load
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in
+    if (!isLoggedIn()) {
+        showToast('Please login first to book an event', 'warning');
+        setTimeout(() => {
+            window.location.href = '/Login';
+        }, 1500);
         return;
     }
 
-    const formData = {
-        id: Date.now(),
-        eventId: getEventIdFromURL() || 1,
-        name: name,
-        email: email,
-        phone: document.querySelector('input[name="phone"]').value,
-        dob: document.querySelector('input[name="dob"]').value,
-        eventType: document.querySelector('select[name="eventType"]').value,
-        guestCount: parseInt(document.querySelector('input[name="guestCount"]').value),
-        venue: document.querySelector('input[name="venue"]').value,
-        specialRequests: document.querySelector('textarea[name="specialRequests"]').value,
-        paymentMethod: payment.value,
-        totalAmount: document.getElementById('totalAmount').textContent.replace('$', ''),
-        status: 'Confirmed',
-        bookedAt: new Date().toISOString()
-    };
+    // Pre-fill user data from localStorage
+    const user = getCurrentUser();
+    if (user) {
+        document.querySelector('input[name="name"]').value = user.fullName || '';
+        document.querySelector('input[name="email"]').value = user.email || '';
+        document.querySelector('input[name="phone"]').value = user.phone || '';
+    }
 
-    let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-    bookings.push(formData);
-    localStorage.setItem('bookings', JSON.stringify(bookings));
-
-    document.getElementById('successMessage').textContent = `Your booking has been confirmed! Booking ID: ${formData.id}. Total Amount: $${formData.totalAmount}`;
-    document.getElementById('successAlert').style.display = 'block';
-    document.querySelector('.booking-form').reset();
-    calculateTotal();
-
-    window.scrollTo(0, 0);
-
-    setTimeout(() => {
-        window.location.href = '/BookingStatus?email=' + encodeURIComponent(formData.email);
-    }, 3000);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
     calculateTotal();
 });
 </script>

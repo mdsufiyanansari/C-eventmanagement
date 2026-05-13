@@ -125,40 +125,46 @@ function updateThemeIcon(isDark) {
 function handleLogin(event) {
     event.preventDefault();
     
-    const form = event.target;
-    const email = form.querySelector('input[type="email"]').value.trim();
-    const password = form.querySelector('input[type="password"]').value.trim();
-    const rememberMe = form.querySelector('#rememberMe')?.checked || false;
+    // Get form elements - use document query
+    const email = (document.querySelector('input[name="email"]') || document.querySelector('input[type="email"]') || {}).value?.trim();
+    const password = (document.querySelector('#passwordInput') || {}).value;
+    const rememberMe = (document.querySelector('#rememberMe') || {}).checked;
 
-    if (!email || !password) {
-        showToast('Please fill in all fields!', 'error');
+    // Validation
+    if (!email || !isValidEmail(email)) {
+        showToast('Please enter a valid email address', 'error');
+        return;
+    }
+    
+    if (!password) {
+        showToast('Please enter your password', 'error');
         return;
     }
 
-    // Create user object
-    const user = {
-        id: Date.now(),
-        name: email.split('@')[0],
-        email: email,
-        loginDate: new Date().toLocaleDateString()
+    // Check credentials
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+
+    if (!user) {
+        showToast('Invalid email or password', 'error');
+        return;
+    }
+
+    // Login successful
+    const userData = {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone
     };
 
-    // Store in localStorage
-    localStorage.setItem('currentUser', JSON.stringify(user));
+    localStorage.setItem('currentUser', JSON.stringify(userData));
+    
     if (rememberMe) {
-        localStorage.setItem('rememberMe', 'true');
+        localStorage.setItem('rememberEmail', email);
     }
 
-    // Initialize user bookings if not exists
-    if (!localStorage.getItem('userBookings')) {
-        localStorage.setItem('userBookings', JSON.stringify([]));
-    }
-
-    // Update navbar
-    updateNavbar();
-
-    // Show success message and redirect
-    showToast('Login successful! Welcome, ' + user.name);
+    showToast('Login successful! Redirecting...', 'success');
     setTimeout(() => {
         window.location.href = '/Dashboard';
     }, 1500);
@@ -166,60 +172,78 @@ function handleLogin(event) {
 
 function handleSignup(event) {
     event.preventDefault();
+    
+    // Get form elements - use document query if form is not available
+    const fullName = (document.querySelector('input[name="fullName"]') || {}).value?.trim();
+    const email = (document.querySelector('input[name="email"]') || {}).value?.trim();
+    const phone = (document.querySelector('input[name="phone"]') || {}).value?.trim();
+    const password = (document.querySelector('#signupPassword') || {}).value;
+    const confirmPassword = (document.querySelector('#confirmPassword') || {}).value;
+    const termsCheck = (document.querySelector('#termsCheck') || {}).checked;
 
-    const form = event.target;
-    const fullName = form.querySelector('input[type="text"]').value.trim();
-    const email = form.querySelector('input[type="email"]').value.trim();
-    const phone = form.querySelector('input[type="tel"]').value.trim();
-    const password = form.querySelector('#signupPassword').value.trim();
-    const confirmPassword = form.querySelector('#confirmPassword').value.trim();
-    const termsCheck = form.querySelector('#termsCheck')?.checked;
-
-    if (!fullName || !email || !phone || !password || !confirmPassword) {
-        showToast('Please fill in all fields!', 'error');
+    // Validation
+    if (!fullName) {
+        showToast('Please enter your full name', 'error');
         return;
     }
-
-    if (!termsCheck) {
-        showToast('Please accept the terms and conditions!', 'error');
+    
+    if (!email || !isValidEmail(email)) {
+        showToast('Please enter a valid email address', 'error');
         return;
     }
-
-    // Validate passwords match
+    
+    if (!phone) {
+        showToast('Please enter your phone number', 'error');
+        return;
+    }
+    
+    if (password.length < 8) {
+        showToast('Password must be at least 8 characters', 'error');
+        return;
+    }
+    
     if (password !== confirmPassword) {
-        showToast('Passwords do not match!', 'error');
+        showToast('Passwords do not match', 'error');
+        return;
+    }
+    
+    if (!termsCheck) {
+        showToast('Please agree to the Terms & Conditions', 'error');
         return;
     }
 
-    // Validate password length
-    if (password.length < 6) {
-        showToast('Password must be at least 6 characters long!', 'error');
+    // Check if email already exists
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+        showToast('Email already registered. Please login or use a different email.', 'error');
         return;
     }
 
-    // Create user object
-    const user = {
-        id: Date.now(),
-        name: fullName,
+    // Create new user
+    const newUser = {
+        id: Date.now().toString(),
+        fullName: fullName,
         email: email,
         phone: phone,
-        signupDate: new Date().toLocaleDateString()
+        password: password,
+        registeredDate: new Date().toISOString()
     };
 
-    // Store in localStorage
-    localStorage.setItem('currentUser', JSON.stringify(user));
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
     
-    // Initialize user bookings
-    localStorage.setItem('userBookings', JSON.stringify([]));
+    // Auto-login after signup
+    localStorage.setItem('currentUser', JSON.stringify({
+        id: newUser.id,
+        fullName: newUser.fullName,
+        email: newUser.email,
+        phone: newUser.phone
+    }));
 
-    // Update navbar
-    updateNavbar();
-
-    // Show success message and redirect
-    showToast('Account created successfully! Welcome, ' + fullName);
+    showToast('Account created successfully! Redirecting...', 'success');
     setTimeout(() => {
         window.location.href = '/Dashboard';
-    }, 1500);
+    }, 2000);
 }
 
 function handleLogout() {
@@ -1016,6 +1040,78 @@ window.addEventListener('scroll', function() {
         }
     }
 });
+
+// ===========================
+// HELPER FUNCTIONS - AUTH
+// ===========================
+
+function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+function isLoggedIn() {
+    return localStorage.getItem('currentUser') !== null;
+}
+
+function getCurrentUser() {
+    const user = localStorage.getItem('currentUser');
+    return user ? JSON.parse(user) : null;
+}
+
+function logout() {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('rememberEmail');
+    showToast('Logged out successfully', 'success');
+    setTimeout(() => {
+        window.location.href = '/';
+    }, 1000);
+}
+
+function prefillRememberedEmail() {
+    const remembered = localStorage.getItem('rememberEmail');
+    if (remembered) {
+        const emailInput = document.querySelector('input[name="email"]') || document.querySelector('input[type="email"]');
+        if (emailInput) {
+            emailInput.value = remembered;
+        }
+    }
+}
+
+// ===========================
+// BOOKING CALCULATION FUNCTIONS
+// ===========================
+
+function calculateTotal() {
+    const guestCountInput = document.querySelector('input[name="guestCount"]') || document.querySelectorAll('input[type="number"]')[0];
+    const guestCount = parseInt(guestCountInput?.value) || 0;
+    
+    const perGuestPrice = 50;
+    const platformFee = 10;
+    
+    const subtotal = guestCount * perGuestPrice;
+    const serviceFee = Math.round(subtotal * 0.05);
+    const totalAmount = subtotal + serviceFee + platformFee;
+    
+    // Update summary display
+    const summaryGuests = document.getElementById('summaryGuests');
+    const serviceFeeElement = document.getElementById('serviceFee');
+    const totalAmountElement = document.getElementById('totalAmount');
+    
+    if (summaryGuests) summaryGuests.textContent = guestCount;
+    if (serviceFeeElement) serviceFeeElement.textContent = '$' + serviceFee;
+    if (totalAmountElement) totalAmountElement.textContent = '$' + totalAmount;
+}
+
+function updateEventType() {
+    const eventTypeSelect = document.querySelector('select[name="eventType"]') || document.querySelectorAll('select')[0];
+    const eventType = eventTypeSelect?.value || '';
+    
+    const summaryEventType = document.getElementById('summaryEventType');
+    if (summaryEventType) {
+        summaryEventType.textContent = eventType || '-';
+    }
+}
 
 // ===========================
 // ERROR HANDLING

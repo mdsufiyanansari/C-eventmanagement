@@ -298,7 +298,18 @@ function viewEventDetails(eventId) {
 }
 
 function bookEvent(eventId) {
-    window.location.href = `/Booking?eventId=${eventId}`;
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user) {
+        showToast('Please login to book events', 'warning');
+        setTimeout(() => {
+            window.location.href = '/Login';
+        }, 1500);
+        return;
+    }
+
+    const event = sampleEvents.find(e => e.id === eventId);
+    localStorage.setItem('selectedEvent', JSON.stringify(event));
+    window.location.href = '/Booking';
 }
 
 // Initialize on load

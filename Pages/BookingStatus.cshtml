@@ -14,8 +14,8 @@
     <!-- Main Content -->
     <section class="py-5">
         <div class="container">
-            <!-- Search for Bookings -->
-            <div class="mb-5">
+            <!-- Search for Bookings (shown if not logged in) -->
+            <div class="mb-5" id="searchSection" style="display: none;">
                 <div class="row g-3">
                     <div class="col-md-8">
                         <input type="email" class="form-control form-control-lg" placeholder="Enter your email to view bookings" id="searchEmail">
@@ -171,13 +171,18 @@ Booked on: ${new Date(booking.bookedAt).toLocaleString()}`);
     }
 }
 
-// Load bookings on page load if email is in query params
+// Load bookings on page load
 document.addEventListener('DOMContentLoaded', function() {
-    const params = new URLSearchParams(window.location.search);
-    const email = params.get('email');
-    if (email) {
-        document.getElementById('searchEmail').value = email;
-        loadBookings(email);
+    const user = getCurrentUser();
+    const searchSection = document.getElementById('searchSection');
+
+    if (user) {
+        // User is logged in - show their bookings automatically
+        searchSection.style.display = 'none';
+        loadBookings(user.email);
+    } else {
+        // User is not logged in - show search box
+        searchSection.style.display = 'block';
     }
 });
 </script>

@@ -159,62 +159,140 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in
+    if (!isLoggedIn()) {
+        showToast('Please login to access dashboard', 'warning');
+        setTimeout(() => {
+            window.location.href = '/Login';
+        }, 1500);
+        return;
+    }
     loadDashboardData();
 });
 
 function loadDashboardData() {
-    const user = JSON.parse(localStorage.getItem('currentUser')) || {};
-    const bookings = JSON.parse(localStorage.getItem('userBookings')) || [];
+    const user = getCurrentUser();
+    
+    if (!user) {
+        window.location.href = '/Login';
+        return;
+    }
 
     // Update user info
-    document.getElementById('userName').textContent = user.name || 'Guest';
-    document.getElementById('profileName').textContent = user.name || 'Guest User';
-    document.getElementById('profileEmail').textContent = user.email || 'guest@example.com';
+    document.getElementById('userName').textContent = user.fullName || 'User';
+    document.getElementById('profileName').textContent = user.fullName || 'User';
+    document.getElementById('profileEmail').textContent = user.email || '';
     document.getElementById('memberSince').textContent = new Date().toLocaleDateString();
 
+    // Get user's bookings
+    const allBookings = JSON.parse(localStorage.getItem('bookings')) || [];
+    const userBookings = allBookings.filter(b => b.email.toLowerCase() === user.email.toLowerCase());
+
     // Update stats
-    document.getElementById('bookingCount').textContent = bookings.length;
-    document.getElementById('totalBookings').textContent = bookings.length;
-    document.getElementById('upcomingCount').textContent = bookings.filter(b => new Date(b.date) > new Date()).length;
-    document.getElementById('guestCount').textContent = bookings.reduce((sum, b) => sum + (parseInt(b.guests) || 0), 0);
+    document.getElementById('bookingCount').textContent = userBookings.length;
+    document.getElementById('totalBookings').textContent = userBookings.length;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const upcomingBookings = userBookings.filter(b => {
+        const eventDate = new Date(b.eventDate);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate >= today && b.status !== 'Cancelled';
+    });
+    document.getElementById('upcomingCount').textContent = upcomingBookings.length;
+    
+    const totalGuests = userBookings.reduce((sum, b) => sum + (parseInt(b.guestCount) || 0), 0);
+    document.getElementById('guestCount').textContent = totalGuests;
 
     // Display bookings
-    if (bookings.length > 0) {
-        const bookingsList = document.getElementById('bookingsList');
+    const bookingsList = document.getElementById('bookingsList');
+    if (userBookings.length > 0) {
         bookingsList.innerHTML = '';
         
-        bookings.forEach(booking => {
+        userBookings.slice(0, 5).forEach(booking => {
             const bookingCard = document.createElement('div');
-            bookingCard.className = 'booking-card mb-3';
+            bookingCard.className = 'booking-card mb-3 p-3';
+            bookingCard.style.borderLeft = booking.status === 'Cancelled' ? '5px solid #dc3545' : '5px solid #667eea';
+            
+            const statusBadgeColor = {
+                'Confirmed': 'success',
+                'Pending': 'warning',
+                'Completed': 'info',
+                'Cancelled': 'danger'
+            }[booking.status] || 'secondary';
+            
             bookingCard.innerHTML = `
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <h6 class="fw-bold">${booking.eventType}</h6>
-                        <p class="text-muted small mb-1"><i class="fas fa-calendar"></i> ${booking.date}</p>
-                        <p class="text-muted small mb-1"><i class="fas fa-map-pin"></i> ${booking.location}</p>
-                        <p class="text-muted small"><i class="fas fa-users"></i> ${booking.guests} guests</p>
+                        <h6 class="fw-bold mb-2">${booking.eventType} Event</h6>
+                        <p class="text-muted small mb-1"><i class="fas fa-calendar"></i> ${new Date(booking.eventDate).toLocaleDateString()}</p>
+                        <p class="text-muted small mb-1"><i class="fas fa-map-pin"></i> ${booking.venue}</p>
+                        <p class="text-muted small"><i class="fas fa-users"></i> ${booking.guestCount} guests</p>
                     </div>
                     <div class="col-md-4 text-end">
-                        <span class="badge bg-success">Confirmed</span>
+                        <span class="badge bg-${statusBadgeColor}">${booking.status}</span>
                         <div class="mt-2">
-                            <button class="btn btn-sm btn-outline-primary">View</button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="cancelBooking('${booking.id}')">Cancel</button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewBookingDetails('${booking.id}')">View</button>
+                            ${booking.status !== 'Cancelled' ? `<button class="btn btn-sm btn-outline-danger" onclick="cancelBooking('${booking.id}', '${booking.email}')">Cancel</button>` : ''}
                         </div>
                     </div>
                 </div>
             `;
             bookingsList.appendChild(bookingCard);
         });
+
+        if (userBookings.length > 5) {
+            const viewAllBtn = document.createElement('div');
+            viewAllBtn.className = 'text-center mt-3';
+            viewAllBtn.innerHTML = `<a href="/BookingStatus" class="btn btn-outline-primary">View All Bookings</a>`;
+            bookingsList.appendChild(viewAllBtn);
+        }
+    } else {
+        bookingsList.innerHTML = `
+            <div class="text-center py-5">
+                <i class="fas fa-calendar-alt" style="font-size: 3rem; color: #ddd;"></i>
+                <p class="text-muted mt-3">No bookings yet. <a href="/Events">Browse events</a></p>
+            </div>
+        `;
     }
 }
 
-function cancelBooking(bookingId) {
-    if (confirm('Are you sure you want to cancel this booking?')) {
-        let bookings = JSON.parse(localStorage.getItem('userBookings')) || [];
-        bookings = bookings.filter(b => b.id !== bookingId);
-        localStorage.setItem('userBookings', JSON.stringify(bookings));
+function viewBookingDetails(bookingId) {
+    const allBookings = JSON.parse(localStorage.getItem('bookings')) || [];
+    const booking = allBookings.find(b => b.id === bookingId);
+
+    if (booking) {
+        alert(`Booking Details:
+
+Booking ID: ${booking.id}
+Name: ${booking.name}
+Event Type: ${booking.eventType}
+Event Date: ${new Date(booking.eventDate).toLocaleDateString()}
+Guests: ${booking.guestCount}
+Venue: ${booking.venue}
+Total: $${booking.totalAmount}
+Status: ${booking.status}
+Booked on: ${new Date(booking.bookingDate).toLocaleString()}`);
+    }
+}
+
+function cancelBooking(bookingId, email) {
+    if (!confirm('Are you sure you want to cancel this booking?')) return;
+
+    const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+    const bookingIndex = bookings.findIndex(b => b.id === bookingId);
+
+    if (bookingIndex !== -1) {
+        bookings[bookingIndex].status = 'Cancelled';
+        localStorage.setItem('bookings', JSON.stringify(bookings));
         loadDashboardData();
-        showToast('Booking cancelled successfully');
+        showToast('Booking cancelled successfully', 'success');
+    }
+}
+
+function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        logout();
     }
 }
 </script>
